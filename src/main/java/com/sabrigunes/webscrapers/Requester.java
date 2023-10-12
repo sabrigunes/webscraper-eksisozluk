@@ -22,6 +22,10 @@ public class Requester {
     private int requestCountInAMinute;
     private int maxRequestAtAMinute;
 
+    public enum RequestType {
+        DELETE, GET, HEAD, OPTIONS, POST, PUT;
+    }
+
     public Requester(long requestDelay) {
         setRequestDelay(requestDelay);
         isWorkWithDelay = true;

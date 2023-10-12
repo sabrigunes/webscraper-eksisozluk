@@ -13,7 +13,9 @@ public class WebScraper {
     private static final Requester requester;
     static URL subjectUrl;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws MalformedURLException {
+        runForSitemap();
+        System.exit(1);
         String url;
         if(args.length != 0)
             url = args[0];
@@ -54,14 +56,20 @@ public class WebScraper {
             url = Parser.getNextPageURL(url, document);
             if (entries.size() > 500){
                 System.out.println("500 entry birikti. Veriler CSV dosyayına yazılıyor.");
-                CsvWriter.writeToCsv(entries);
+                DataWriter.writeEntriesToCsv(entries);
                 entries.clear();
             }
 
         }
         while (Parser.isThereNextPage(document));
         System.out.printf("%d entry toplandı. Veriler CSV dosyayına yazılıyor.%n", entries.size());
-        CsvWriter.writeToCsv(entries);
+        DataWriter.writeEntriesToCsv(entries);
         System.out.printf("Veriler CSV dosyayına yazıldı.%n");
+    }
+
+    public static void runForSitemap() throws MalformedURLException {
+        var document = requester.sendRequest(new URL(EKSI_URL + "/sitemap.xml"));
+        DataWriter.writeSitemapToXml(document.toString());
+        System.out.printf("Site haritası XML dosyayına yazıldı.%n");
     }
 }
